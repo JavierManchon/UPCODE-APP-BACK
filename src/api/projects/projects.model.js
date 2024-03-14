@@ -3,7 +3,9 @@ const Schema = mongoose.Schema;
 
 const projectSchema = new Schema(
     {
-        designs: [{ type: Schema.Types.ObjectId, ref: 'designs', default: null }]
+        name: {type: String, required: true},
+        designs: [{ type: Schema.Types.ObjectId, ref: 'designs', default: null }],
+        user: {type: Schema.Types.ObjectId, ref: 'user'}
     },
 
     { timestamps: true }
