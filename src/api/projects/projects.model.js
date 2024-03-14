@@ -5,7 +5,7 @@ const projectSchema = new Schema(
     {
         name: {type: String, required: true},
         designs: [{ type: Schema.Types.ObjectId, ref: 'designs', default: null }],
-        user: {type: Schema.Types.ObjectId, ref: 'user'}
+        userId: {type: Schema.Types.ObjectId, ref: 'user'}
     },
 
     { timestamps: true }
