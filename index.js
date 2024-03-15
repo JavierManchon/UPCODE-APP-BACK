@@ -42,7 +42,7 @@ app.use(
 
 //Routes
 app.use('/api/users', UserRoutes)
-app.use('/api/products', ProductRoutes)
+app.use('/api/products', ProductRoutes) //esta habra que borrarla
 app.use("/public", express.static("public"));
 app.use("/api", (req, res, next) => "im alive");
 
