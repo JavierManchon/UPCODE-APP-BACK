@@ -1,6 +1,5 @@
 const mongoose = require('mongoose');
 
-
 const designSchema = new mongoose.Schema({
   nameDesign: {
     type: String,
@@ -100,3 +99,7 @@ const designSchema = new mongoose.Schema({
   }]
 }}
 );
+
+const Design = mongoose.model('designs', designSchema);
+module.exports = Design;
+
