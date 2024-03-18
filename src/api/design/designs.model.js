@@ -14,9 +14,11 @@ const DesignSchema = new mongoose.Schema({
   defaultContent: {
     children: [],
     grandSon: [],
-    count: {
+    countChildren: {
       type: Number,
-      required: true
+    },
+    countGrandson: {
+      type: Number,
     }
   },
   defaultStyles: [{
