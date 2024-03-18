@@ -55,6 +55,7 @@ const DesignSchema = new mongoose.Schema({
     fontWeightTitle: null,
     fontWeightItem: null,
     fontWeightText: null,
+    borderRadius: null,
   }
 });
 
