@@ -5,8 +5,8 @@ const nodemailer = require("nodemailer");
         port: 465,
         secure: true, // true for 465, false for other ports
         auth: {
-          user: "", // generated ethereal user
-          pass: "", // generated ethereal password
+          user: "upcodeapp.team@gmail.com", // generated ethereal user
+          pass: process.env.NODEMAILER_PASS, // generated ethereal password
         },
       });
 

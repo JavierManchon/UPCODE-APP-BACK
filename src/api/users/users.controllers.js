@@ -3,17 +3,21 @@ const {generateToken} = require('../../utils/jwt/jwt.js');
 const {generateID} = require("../../utils/generateID/generateID.js")
 const JwtUtils = require('../../utils/jwt/jwt.js');
 const { transporter } = require('../../utils/nodemailer-config');
+const jwt = require('jsonwebtoken');
+
 
 
 
 const register = async (req, res, next) => {
 
     try {
-       
+        
+        //Si no coincide con de 8 a 12 y que ocntenga mayusculas, minusculas y caracteres especiales da error.
         const regexp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,12}$/;
 
-        const {name, email, surname, password} = req.body
-        if(name === ""|| email === "" || surname === ""){
+        //Como campos obligatorios
+        const {name, surname, email, username, password} = req.body
+        if(name === ""|| email === "" || surname === "" || username === ""){
             return res.status(401).json("¡No puedes dejar campos vacios!")
         }
         if(password.length < 8){
@@ -29,6 +33,7 @@ const register = async (req, res, next) => {
         user.email = email;
         user.surname = surname;
         user.password = password;
+        user.username = username;
         user.token = generateID();
         const userExist = await User.findOne({ email: user.email })
         if (userExist) {
@@ -37,12 +42,13 @@ const register = async (req, res, next) => {
         }
         await user.save();
 
+        //Configuración del email que se envía.
         await transporter.sendMail({
-            from: '"Cristian Farriol " <//emisor>', // sender address
-            to: `${req.body.email}`, // list of receivers
-            subject: "Enviado desde nodemailer ✔", // Subject line
-            text: "Hello world?", // plain text body
-            html: `<b>Bienvenido a la aplicacion! ${req.body.name}, solo te queda un paso por realizar, pincha en el siguiente enláce para completar tu registro: <a href="http://localhost:4200/auth/confirm-user/${user.token}">Confirmar usuario<a> </b>`, // html body
+            from: '"Equipo UP_CODE " <//emisor>', // Emisor
+            to: `${req.body.email}`, // Remitente
+            subject: "Confirmación registro en UP_CODE", // Asunto
+            text: "Hello world!", // Texto plano
+            html: `<b>Bienvenido a la aplicacion! ${req.body.name}, solo te queda un paso por realizar, pincha en el siguiente enláce para completar tu registro: <a href="http://localhost:8084/api/users/confirm-user/${user.token}">Confirmar usuario<a> </b>`, // Cuerpo html
           });
         return res.status(201).json({msg: 'Revisa tu correo. Se te ha enviado un enlace de confirmación'})
 
@@ -63,7 +69,7 @@ const confirm = async (req, res, next) => {
 
     try {
         userConfirm.confirmed = true;
-        userConfirm.token = "";
+        //userConfirm.token = "";
         await userConfirm.save()
         return res.status(200).json({msg: "¡Usuario Confirmado!"})
     } catch (error) {
@@ -71,32 +77,35 @@ const confirm = async (req, res, next) => {
     }
 }
 
-const login = async (req, res, next) => {
+const login = async (req, res, next) => {//Por ahora almaceno el token en la informacion del usuario para las pruebas en postman de rutas protegidas
 
     try {
         // Comprobamos que existe el email para logarse
         const user = await User.findOne({ email: req.body.email });
 
+        //Si el usuario no existe no le deja logarse
         if(!user){
          const error = new Error("El usuario no está registrado");
          return res.status(401).json({msg: error.message})
         }
 
+        //Comprobamos la contraseña con respecto a la contraseña hasheada del user
         if( !await user.passwordCheck(req.body.password)){
             const error = new Error("El correo electronico o la contraseña no son correctos, revisalos e intenta nuevamente");
             return res.status(401).json({msg: error.message})
         }
 
+        //Comprobamos si esta confirmado mediante email el usuario
         if (!user.confirmed){
             const error = new Error("¡Aun no has confirmado tu cuenta!");
             return res.status(401).json({msg: error.message})
         }
         if (await user.passwordCheck(req.body.password)) {
-                 // Generamos el Token
+                 // Generamos el Token usando en fichero de jwt que hemos importado
             const token = generateToken(user._id, user.email);
             user.token = token;
             await user.save()
-            // Devolvemos el Token al Frontal
+            // Devolvemos el Token al Front
             return res.json(user);
         } else {
             const error = new Error("El correo electronico o la contraseña no son correctos, revisalos e intenta nuevamente");
@@ -145,6 +154,7 @@ const newPassword = async (req, res, next) => {
     }
 }
 
+//Funcion que coge la informacion del usuario a travs del token y comrpueba si es admin
 const isAdmin = async (req, res, next) => {
     try {
         const token = req.headers.authorization;
@@ -158,5 +168,54 @@ const isAdmin = async (req, res, next) => {
 }
 
 
+//Funcion que usa el token para obtener la informaciond el usuario
+const getUserByToken = async (req, res, next) => {
+    console.log(req.headers.authorization);
+    try {
+        const token = req.headers.authorization;
+        if (!token) {
+            return res.status(401).json({ message: 'Authorization token is missing' });
+        }
 
-module.exports = { register, login, logout, confirm,  newPassword, isAdmin}
+        const tokenWithoutBearer = token.replace('Bearer ', '');
+        const decodedToken = jwt.verify(tokenWithoutBearer, JWT_SECRET);
+
+        // El token contiene el ID del usuario
+        const userId = decodedToken.id;
+        const userLogued = await User.findOne({ _id: userId });
+
+        if (!userLogued) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        return res.status(200).json(userLogued);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+//La funcion utiliza el id del usuario para otener los datos y te permite actualizar su información
+const patchUser = async (req, res, next) => {
+    try {
+        const { id } = req.params;
+        const { username, name, surname } = req.body;
+        let picture = req.file ? req.file.path : null;
+        const userToUpdate = {
+            username,
+            name,
+            surname
+        }
+        if (picture) {
+            userToUpdate.picture = picture
+        }
+        const updatedUser = await User.findByIdAndUpdate(id, userToUpdate, { new: true });
+        
+        return res.status(200).json(updatedUser);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+}
+
+
+
+module.exports = { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser }
