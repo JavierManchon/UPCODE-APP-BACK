@@ -6,7 +6,7 @@ const upload = require('../../middlewares/updateFile.middleware');
 
 ProductRoutes.get('/', getAll);
 ProductRoutes.get('/:id', getOne);
-ProductRoutes.post('/post', [isAuth], upload.single('image'), postOne);
+ProductRoutes.post('/post', [isAuth], upload.single('image'), postOne)
 ProductRoutes.patch('/edit/:id', upload.single('image'),  patchOne);
 ProductRoutes.delete('/delete/:id', deleteOne);
 
