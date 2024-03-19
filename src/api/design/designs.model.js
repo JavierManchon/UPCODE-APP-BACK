@@ -4,7 +4,7 @@ const DesignSchema = new mongoose.Schema({
   nameDesign: {
     type: String,
     required: true,
-    trim: true 
+    trim: true
   },
   elementType: {
     type: String,
@@ -36,7 +36,9 @@ const DesignSchema = new mongoose.Schema({
     default: null
   }],
   edit: {
-    text: [],
+    text: null,
+    textItem: null,
+    textTitle: null,
     bgColorNav: null,
     bgColorForm: null,
     bgColorButton: null,
@@ -57,7 +59,9 @@ const DesignSchema = new mongoose.Schema({
     fontWeightTitle: null,
     fontWeightItem: null,
     fontWeightText: null,
+    border: null,
     borderRadius: null,
+    outline: null
   }
 });
 
