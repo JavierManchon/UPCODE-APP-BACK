@@ -2,63 +2,81 @@ const Design = require('./designs.model');
 const { transporter } = require('../../utils/nodemailer-config');
 const User = require('../users/users.model');
 
-const create = async (req, res , next) => {
-    const userId = req.params;
-    const {nameDesign, elementType, children, grandSon, count, defaultStyles} = req.body;
-
-    if(!userId) {
-        return res.status(404).json({msg: 'ID de usuario no encontrado'})
-    }
+const createDesign = async (req, res, next) => {
+    const userId = req.params.userId;
+    const { nameDesign, elementType, children, grandSon, type, countChildren, countGrandson, defaultStyles, edit } = req.body;
 
     try {
-        const newDesign = new Design;
-        res.status(200).json({msg: 'Diseño creado correctamente'});
+        if (!userId) {
+            return res.status(404).json({ msg: 'ID de usuario no encontrado' });
+        }
 
-        newDesign.nameDesign = nameDesign;
-        newDesign.elementType = elementType;
-        newDesign.defaultContent.children = children;
-        newDesign.defaultContent.grandSon = grandSon;
-        newDesign.defaultContent.count = count;
-        newDesign.defaultStyles = defaultStyles;
-        newDesign.save()
-        res.status(200).json({msg: 'Diseño guardado correctamente', data: newDesign});
+        //Si el valor de template es false lo dejo como está si es true lo cambio a false
+        let template = req.body.template || false;
+        template = template === true ? false : template;
+
+        const newDesign = new Design({
+            nameDesign,
+            elementType,
+            template,
+            defaultContent: {
+                children,
+                grandSon,
+                countChildren,
+                countGrandson,
+                type
+            },
+            defaultStyles,
+            edit
+        });
+
+        await newDesign.save();
 
         const user = await User.findById(userId);
-        user.designs = newDesign._id;
 
-    }catch (error){
-        return next(error);
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+
+        user.designs.push(newDesign._id);
+        await user.save();
+
+        res.status(201).json({ msg: 'Diseño creado y guardado correctamente', data: newDesign });
+    } catch (error) {
+        next(error);
     }
 };
 
-const remove = async (req, res , next) => {
-    const designId =  req.params;
 
-    try{
-        const designToRemove = Design.findByIdAndDelete(designId);
-        return res.status(200)({msg:'diseño eliminado con exito', data:designToRemove})
-    }catch (error){
-        return next(error);
+const removeDesign = async (req, res , next) => {
+    const designId = req.params.designId;
+    try {
+        const deletedDesign = await Design.findByIdAndDelete(designId);
+        if (!deletedDesign) {
+            return res.status(404).json({ msg: 'Diseño no encontrado' });
+        }
+        // Quitamos l ID  de cualquier usuario que lo tenga en designs
+        await User.updateMany({ designs: designId }, { $pull: { designs: designId } });
+        res.status(200).json({ msg: 'Diseño eliminado con exito' });
+    } catch (error) {
+        next(error);
     }
 };
 
-const edit = async (req, res, next) => {
-    const designId = req.params;
-    const html = req.body.html;
-    const css = req.body.css;
-    
-
-    try{
-        const searchDesign = Design.findById(designId);
-    }catch (error){
+const editDesign = async (req, res, next) => {
+    try {
+        const designId = req.params.designId;
+        const { edit } = req.body;
+        
+        const updatedDesign = await Design.findByIdAndUpdate(designId, { edit }, { new: true });
+        
+        return res.status(200).json(updatedDesign);
+    } catch (error) {
         return next(error);
     }
-
-
-
 }
 
-const alldesigns = async (req, res, next) => {
+const getAllDesigns = async (req, res, next) => {
     try {
         const designs = await Design.find();
         res.status(200).json(designs);
@@ -66,12 +84,18 @@ const alldesigns = async (req, res, next) => {
         return next(error);
     }
 }
-module.exports = {create, remove, edit, alldesigns};
 
+const getDesignById = async (req, res, next) => {
+    const designId = req.params.designId;
+    try {
+        const design = await Design.findById(designId);
+        if (!design) {
+            return res.status(404).json({ msg: 'Diseño no encontrado' });
+        }
+        res.status(200).json(design);
+    } catch (error) {
+        next(error);
+    }
+};
 
-
-
-//enum: ["footer","section(article)","headerNavigator", "mainPage","col(colgroup)","formComplete","tableComplete","figureComplete","orderedList","unOrderedList","sectionList"],
-
-
-//enum: ['<a href="" class="link">',"<br>",'<button class="button" type="" >','<div class="container">','<h1 class>',"<h2>","<h3>","<hr>",'<img src="">', '<input type="" name="" id="">',"<nav>","<p>","<span>"]
+module.exports = {createDesign, removeDesign, editDesign, getAllDesigns, getDesignById};

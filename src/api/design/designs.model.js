@@ -11,6 +11,10 @@ const DesignSchema = new mongoose.Schema({
     required: true,
     trim: true 
   },
+  template: {
+    type: Boolean,
+    required: true
+  },
   defaultContent: {
     children: [],
     grandSon: [],
