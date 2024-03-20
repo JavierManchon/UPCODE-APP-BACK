@@ -13,11 +13,19 @@ const DesignSchema = new mongoose.Schema({
   },
   template: {
     type: Boolean,
-    required: true
+    default: false
+  },
+  image: {
+    type: String,
+    default: null
   },
   defaultContent: {
-    children: [],
-    grandSon: [],
+    children: [{
+      type: String,
+    }],
+    grandSon: [{
+      type: String,
+    }],
     countChildren: {
       type: Number,
     },
@@ -36,8 +44,7 @@ const DesignSchema = new mongoose.Schema({
   },
   tickets: [{
     type: mongoose.Schema.Types.ObjectId, 
-    ref: 'tickets',
-    default: null
+    ref: 'tickets'
   }],
   edit: {
     text: {

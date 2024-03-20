@@ -1,6 +1,6 @@
 const designRoutes = require('express').Router();
 const { isAuth } = require('../../middlewares/auth.middleware');
-const {createDesign, removeDesign, editDesign, getAllDesigns, getDesignById}= require('./designs.controllers');
+const {createDesign, removeDesign, editDesign, getAllDesigns, getDesignById, getUserDesigns}= require('./designs.controllers');
 
 
 
@@ -11,6 +11,7 @@ designRoutes.patch('/editDesign/:designId',[isAuth],editDesign);
 // designRoutes.put('/closeticket',[isAuth],closeticket);
 designRoutes.get('/allDesigns', getAllDesigns);
 designRoutes.get('/oneDesign/:designId',[isAuth], getDesignById);
+designRoutes.get('/designByUser/:userId',[isAuth], getUserDesigns);
 // designRoutes.get('/single',singleticket);
 
 
