@@ -54,15 +54,12 @@ const DesignSchema = new mongoose.Schema({
     },
     textArray: [{
       type: String,
-      default: null
     }],
     textArray2: [{
       type: String,
-      default: null
     }],
     textArrayBidimensional: [[{
       type: String,
-      default: null
     }]],
     bgColorNav: {
       type: String,
@@ -125,24 +122,24 @@ const DesignSchema = new mongoose.Schema({
       default: null
     },
     textDecorationTitle: {
-      type: String,
-      default: null
+      type: Boolean,
+      default: false
     },
     textDecorationText: {
-      type: String,
-      default: null
+      type: Boolean,
+      default: false
     },
     fontWeightTitle: {
-      type: String,
-      default: null
+      type: Boolean,
+      default: false
     },
     fontWeightItem: {
-      type: String,
-      default: null
+      type: Boolean,
+      default: false
     },
     fontWeightText: {
-      type: String,
-      default: null
+      type: Boolean,
+      default: false
     },
     border: {
       type: String,
@@ -154,7 +151,7 @@ const DesignSchema = new mongoose.Schema({
     },
     outline: {
       type: String,
-      default: null
+      default: 'none'
     }
   }
 });
