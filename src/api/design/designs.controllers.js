@@ -4,7 +4,7 @@ const User = require('../users/users.model');
 
 const createDesign = async (req, res, next) => {
     const userId = req.params.userId;
-    const { nameDesign, elementType, children, grandSon, type, countChildren, countGrandson, defaultStyles, edit } = req.body;
+    const { nameDesign, elementType, template, image, children, grandSon, type, countChildren, countGrandson, defaultStyles, edit } = req.body;
 
     try {
         if (!userId) {
