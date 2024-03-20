@@ -4,21 +4,19 @@ const User = require('../users/users.model');
 
 const createDesign = async (req, res, next) => {
     const userId = req.params.userId;
-    const { nameDesign, elementType, children, grandSon, type, countChildren, countGrandson, defaultStyles, edit } = req.body;
+    const { nameDesign, elementType, template, image, children, grandSon, type, countChildren, countGrandson, defaultStyles, edit } = req.body;
 
     try {
         if (!userId) {
             return res.status(404).json({ msg: 'ID de usuario no encontrado' });
         }
 
-        //Si el valor de template es false lo dejo como está si es true lo cambio a false
-        let template = req.body.template || false;
-        template = template === true ? false : template;
-
         const newDesign = new Design({
+            user: userId,
             nameDesign,
             elementType,
             template,
+            image,
             defaultContent: {
                 children,
                 grandSon,
@@ -85,6 +83,18 @@ const getAllDesigns = async (req, res, next) => {
     }
 }
 
+const getUserDesigns = async (req, res, next) => {
+    const userId = req.params.userId;
+    try {
+        const designs = await Design.find({
+            user: userId
+        }).populate('tickets');
+        res.status(200).json(designs);
+    } catch (error) {
+        return next(error);
+    }
+}
+
 const getDesignById = async (req, res, next) => {
     const designId = req.params.designId;
     try {
@@ -98,4 +108,4 @@ const getDesignById = async (req, res, next) => {
     }
 };
 
-module.exports = {createDesign, removeDesign, editDesign, getAllDesigns, getDesignById};
+module.exports = {createDesign, removeDesign, editDesign, getAllDesigns, getDesignById, getUserDesigns};
