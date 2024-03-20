@@ -31,6 +31,9 @@ const DesignSchema = new mongoose.Schema({
     },
     countGrandson: {
       type: Number,
+    },
+    tagInfo: {
+      type: String
     }
   },
   defaultStyles: [{
