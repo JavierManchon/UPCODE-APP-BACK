@@ -64,9 +64,9 @@ const removeDesign = async (req, res , next) => {
 const editDesign = async (req, res, next) => {
     try {
         const designId = req.params.designId;
-        const { edit } = req.body;
+        const { defaultContent, edit } = req.body;
         
-        const updatedDesign = await Design.findByIdAndUpdate(designId, { edit }, { new: true });
+        const updatedDesign = await Design.findByIdAndUpdate(designId, { defaultContent, edit }, { new: true });
         
         return res.status(200).json(updatedDesign);
     } catch (error) {

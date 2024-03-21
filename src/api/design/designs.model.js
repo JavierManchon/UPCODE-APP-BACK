@@ -132,24 +132,24 @@ const DesignSchema = new mongoose.Schema({
       default: null
     },
     textDecorationTitle: {
-      type: Boolean,
-      default: false
+      type: String,
+      default: null
     },
     textDecorationText: {
-      type: Boolean,
-      default: false
+      type: String,
+      default: null
     },
     fontWeightTitle: {
-      type: Boolean,
-      default: false
+      type: String,
+      default: null
     },
     fontWeightItem: {
-      type: Boolean,
-      default: false
+      type: String,
+      default: null
     },
     fontWeightText: {
-      type: Boolean,
-      default: false
+      type: String,
+      default: null
     },
     border: {
       type: String,
