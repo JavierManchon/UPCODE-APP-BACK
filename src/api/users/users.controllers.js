@@ -71,6 +71,9 @@ const confirm = async (req, res, next) => {
         userConfirm.confirmed = true;
         //userConfirm.token = "";
         await userConfirm.save()
+
+        //Hay que sustituir esto por el link del login cuando lo tengamos enrutado:
+        //return res.redirect('http://ruta-de-tu-pagina-de-login');
         return res.status(200).json({msg: "¡Usuario Confirmado!"})
     } catch (error) {
         return res.status(404).json({msg: err.message})
