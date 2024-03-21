@@ -4,7 +4,7 @@ const {createDesign, removeDesign, editDesign, getAllDesigns, getDesignById, get
 
 
 
-designRoutes.post('/createDesign/:userId',[isAuth],createDesign);
+designRoutes.post('/createDesign/:userId',createDesign);
 designRoutes.delete('/removeDesign/:designId',[isAuth],removeDesign);
 designRoutes.patch('/editDesign/:designId',[isAuth],editDesign);
 // designRoutes.put('/addticket',[isAuth],addticket);
