@@ -3,7 +3,7 @@ const { transporter } = require('../../utils/nodemailer-config');
 const User = require('../users/users.model');
 
 const createDesign = async (req, res, next) => {
-    const userId = req.params.userId;
+    const {userId} = req.params;
     const { nameDesign, elementType, template, image, children, grandSon, tagInfo, countChildren, countGrandson, defaultStyles, edit } = req.body;
 
     try {
@@ -12,7 +12,7 @@ const createDesign = async (req, res, next) => {
         }
 
         const newDesign = new Design({
-            user: userId,
+            userId: userId,
             nameDesign,
             elementType,
             template,
