@@ -1,4 +1,5 @@
 const User = require('../api/users/users.model');
+require('dotenv').config();
 const JwtUtils = require('../utils/jwt/jwt');
 
 
@@ -15,7 +16,7 @@ const isAuth = async (req, res, next) => {
         // Asi nos llega de la cabecera 
         // Bearer TOKEN
         const parsedToken = token.replace('Bearer ', '');
-        const validToken = JwtUtils.verifyToken(parsedToken, process.env.JWT_SECRET);
+        const validToken = JwtUtils.verifyToken(parsedToken, 'KVGfjghdjJJKHLH-43543T-VJHFDSKVJHSFDJK-45646FDGVF');
         const userLogued = await User.findById(validToken.id);
         req.user = userLogued;
         next();

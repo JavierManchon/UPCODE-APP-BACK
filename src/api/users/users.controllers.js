@@ -181,9 +181,9 @@ const getUserByToken = async (req, res, next) => {
         }
 
         const tokenWithoutBearer = token.replace('Bearer ', '');
-        const decodedToken = jwt.verify(tokenWithoutBearer, JWT_SECRET);
+        const decodedToken = jwt.verify(tokenWithoutBearer, 'KVGfjghdjJJKHLH-43543T-VJHFDSKVJHSFDJK-45646FDGVF');
 
-        // El token contiene el ID del usuario
+        // Suponiendo que el token contiene el ID del usuario
         const userId = decodedToken.id;
         const userLogued = await User.findOne({ _id: userId });
 
@@ -197,19 +197,21 @@ const getUserByToken = async (req, res, next) => {
     }
 };
 
+
+
 //La funcion utiliza el id del usuario para otener los datos y te permite actualizar su información
 const patchUser = async (req, res, next) => {
     try {
         const { id } = req.params;
         const { username, name, surname } = req.body;
-        let picture = req.file ? req.file.path : null;
+        let image = req.file ? req.file.path : null;
         const userToUpdate = {
             username,
             name,
             surname
         }
-        if (picture) {
-            userToUpdate.picture = picture
+        if (image) {
+            userToUpdate.image = image
         }
         const updatedUser = await User.findByIdAndUpdate(id, userToUpdate, { new: true });
         
