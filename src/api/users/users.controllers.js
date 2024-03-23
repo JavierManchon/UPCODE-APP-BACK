@@ -84,7 +84,7 @@ const login = async (req, res, next) => {//Por ahora almaceno el token en la inf
 
     try {
         // Comprobamos que existe el email para logarse
-        const user = await User.findOne({ email: req.body.email });
+        const user = await User.findOne({ email: req.body.email })
 
         //Si el usuario no existe no le deja logarse
         if(!user){
@@ -107,9 +107,22 @@ const login = async (req, res, next) => {//Por ahora almaceno el token en la inf
                  // Generamos el Token usando en fichero de jwt que hemos importado
             const token = generateToken(user._id, user.email);
             user.token = token;
-            await user.save()
+            console.log(user)
+            // await user.save()
             // Devolvemos el Token al Front
-            return res.json(user);
+            return res.json({
+                name: user.name, 
+                surname: user.surname,
+                username: user.username,
+                email: user.email,
+                image: user.image,
+                isAdmin: user.isAdmin,
+                isPremium: user.isPremium,
+                project: user.project,
+                designs: user.designs,
+                tickets: user.tickets,
+                token: token
+            });
         } else {
             const error = new Error("El correo electronico o la contraseña no son correctos, revisalos e intenta nuevamente");
             return res.status(401).json({msg: error.message})
@@ -173,7 +186,6 @@ const isAdmin = async (req, res, next) => {
 
 //Funcion que usa el token para obtener la informaciond el usuario
 const getUserByToken = async (req, res, next) => {
-    console.log(req.headers.authorization);
     try {
         const token = req.headers.authorization;
         if (!token) {
@@ -181,6 +193,7 @@ const getUserByToken = async (req, res, next) => {
         }
 
         const tokenWithoutBearer = token.replace('Bearer ', '');
+        
         const decodedToken = jwt.verify(tokenWithoutBearer, 'KVGfjghdjJJKHLH-43543T-VJHFDSKVJHSFDJK-45646FDGVF');
 
         // Suponiendo que el token contiene el ID del usuario
