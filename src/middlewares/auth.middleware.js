@@ -8,7 +8,7 @@ const isAuth = async (req, res, next) => {
             
         // El token se guarda en cabeceras y lo recuperamos de allí
         const token = req.headers.authorization;
-
+        console.log(token)
         if (!token) {
             res.status(404).json({msg: "El token es invalido o no existe", token: false})
             return 

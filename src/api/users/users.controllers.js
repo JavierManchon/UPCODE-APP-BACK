@@ -108,6 +108,7 @@ const login = async (req, res, next) => {//Por ahora almaceno el token en la inf
             // await user.save()
             // Devolvemos el Token al Front
             return res.json({
+                _id: user._id,
                 name: user.name, 
                 surname: user.surname,
                 username: user.username,
