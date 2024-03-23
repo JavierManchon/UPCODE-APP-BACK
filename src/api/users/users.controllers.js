@@ -9,54 +9,50 @@ const jwt = require('jsonwebtoken');
 
 
 const register = async (req, res, next) => {
-
     try {
-        
-        //Si no coincide con de 8 a 12 y que ocntenga mayusculas, minusculas y caracteres especiales da error.
         const regexp = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,12}$/;
 
-        //Como campos obligatorios
-        const {name, surname, email, username, password} = req.body
-        if(name === ""|| email === "" || surname === "" || username === ""){
-            return res.status(401).json("¡No puedes dejar campos vacios!")
+        const { name, surname, email, username, password } = req.body;
+        if (name === "" || email === "" || surname === "" || username === "") {
+            return res.status(401).json("¡No puedes dejar campos vacios!");
         }
-        if(password.length < 8){
-            return res.status(401).json("¡La contraseña es demasiado corta!")
+        if (password.length < 8) {
+            return res.status(401).json("¡La contraseña es demasiado corta!");
         }
-        if(!regexp.test(password)){
-            return res.status(401).json("¡El password no cumple con los requisitos minimos de seguridad!. Recuerda que debe tener de 8 a 12 caracteres y que debe incluir minimo: Un caracter en mayúscula, uno en minúscula, un número y un carácter especial")
+        if (!regexp.test(password)) {
+            return res.status(401).json("¡El password no cumple con los requisitos minimos de seguridad!. Recuerda que debe tener de 8 a 12 caracteres y que debe incluir minimo: Un caracter en mayúscula, uno en minúscula, un número y un carácter especial");
         }
-        
 
-        const user = new User();
-        user.name = name;
-        user.email = email;
-        user.surname = surname;
-        user.password = password;
-        user.username = username;
-        user.token = generateID();
-        const userExist = await User.findOne({ email: user.email })
+        const user = new User({
+            name: name,
+            email: email,
+            surname: surname,
+            password: password,
+            username: username,
+            token: generateID()
+        });
+
+        const userExist = await User.findOne({ email: user.email });
         if (userExist) {
-            const error = new Error("¡El correo ya existe, puedes solicitar crear una nueva contraseña si la has olvidado!");
-            return res.status(401).json({msg: error.message})
+            return res.status(401).json({ msg: "¡El correo ya existe, puedes solicitar crear una nueva contraseña si la has olvidado!" });
         }
+
         await user.save();
 
-        //Configuración del email que se envía.
         await transporter.sendMail({
-            from: '"Equipo UP_CODE " <//emisor>', // Emisor
-            to: `${req.body.email}`, // Remitente
-            subject: "Confirmación registro en UP_CODE", // Asunto
-            text: "Hello world!", // Texto plano
-            html: `<b>Bienvenido a la aplicacion! ${req.body.name}, solo te queda un paso por realizar, pincha en el siguiente enláce para completar tu registro: <a href="http://localhost:8084/api/users/confirm-user/${user.token}">Confirmar usuario<a> </b>`, // Cuerpo html
-          });
-        return res.status(201).json({msg: 'Revisa tu correo. Se te ha enviado un enlace de confirmación'})
+            from: '"Equipo UP_CODE " <//emisor>',
+            to: `${req.body.email}`,
+            subject: "Confirmación registro en UP_CODE",
+            html: `<b>Bienvenido a la aplicación! ${req.body.name}, solo te queda un paso por realizar, pincha en el siguiente enlace para completar tu registro: <a href="http://localhost:8084/api/users/confirm-user/${user.token}">Confirmar usuario</a> </b>`,
+        });
 
+        return res.status(201).json({ msg: 'Revisa tu correo. Se te ha enviado un enlace de confirmación' });
     } catch (error) {
-        const err = new Error("Ha ocurrido un error con el registro.");
-        return res.status(404).json({msg: err.message})
+        console.error(error); // Muestra el error en la consola para propósitos de depuración
+        return res.status(404).json({ msg: "Ha ocurrido un error con el registro." });
     }
-}
+};
+
 
 const confirm = async (req, res, next) => {
     const {token} = req.params;
@@ -73,10 +69,11 @@ const confirm = async (req, res, next) => {
         await userConfirm.save()
 
         //Hay que sustituir esto por el link del login cuando lo tengamos enrutado:
-        //return res.redirect('http://ruta-de-tu-pagina-de-login');
-        return res.status(200).json({msg: "¡Usuario Confirmado!"})
+        return res.redirect('http://localhost:5173/login');
+        
+    
     } catch (error) {
-        return res.status(404).json({msg: err.message})
+        return res.status(404).json({msg: error.message})
     }
 }
 
@@ -216,12 +213,13 @@ const getUserByToken = async (req, res, next) => {
 const patchUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { username, name, surname } = req.body;
+        const { username, name, surname, isPremium } = req.body;
         let image = req.file ? req.file.path : null;
         const userToUpdate = {
             username,
             name,
-            surname
+            surname,
+            isPremium
         }
         if (image) {
             userToUpdate.image = image
