@@ -3,8 +3,8 @@ const { transporter } = require('../../utils/nodemailer-config');
 const User = require('../users/users.model');
 
 const createDesign = async (req, res, next) => {
-    const {userId} = req.params;
-    const { nameDesign, elementType, template, image, children, grandSon, tagInfo, countChildren, countGrandson, defaultStyles, edit } = req.body;
+    const { userId } = req.params;
+    const { nameDesign, elementType, template, image, defaultContent, defaultStyles, edit } = req.body;
 
     try {
         if (!userId) {
@@ -18,11 +18,11 @@ const createDesign = async (req, res, next) => {
             template,
             image,
             defaultContent: {
-                children,
-                grandSon,
-                countChildren,
-                countGrandson,
-                tagInfo
+                children: defaultContent.children || [],
+                grandson: defaultContent.grandson || [],
+                countChildren: defaultContent.countChildren || 0,
+                countGrandson: defaultContent.countGrandson || 0,
+                tagInfo: defaultContent.tagInfo || null
             },
             defaultStyles,
             edit
@@ -44,6 +44,7 @@ const createDesign = async (req, res, next) => {
         next(error);
     }
 };
+
 
 
 const removeDesign = async (req, res , next) => {

@@ -23,7 +23,7 @@ const DesignSchema = new mongoose.Schema({
     children: [{
       type: String,
     }],
-    grandSon: [{
+    grandson: [{
       type: String,
     }],
     countChildren: {
