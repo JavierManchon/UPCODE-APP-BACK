@@ -1,6 +1,6 @@
 const express = require('express');
 const UserRoutes = express.Router();
-const { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser } = require('./users.controllers');
+const { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser, getAllUsers } = require('./users.controllers');
 const { isAuth } = require('../../middlewares/auth.middleware');
 const upload = require('../../middlewares/updateFile.middleware');
 
@@ -12,5 +12,6 @@ UserRoutes.patch('/newPassword/:token', newPassword); // Actualización de contr
 UserRoutes.get('/is-admin', [isAuth], isAdmin); // Verificación de si el usuario es administrador (requiere autenticación)
 UserRoutes.get('/user', [isAuth], getUserByToken); // Obtener información de usuario por token (requiere autenticación)
 UserRoutes.patch('/user/:id', [isAuth, upload.single('image')], patchUser); // Actualizar información de usuario por ID (requiere autenticación)
+UserRoutes.get('/allUsers', [isAuth], getAllUsers); // Obtener información de todos los usuarios (requiere autenticación)
 
 module.exports = UserRoutes;

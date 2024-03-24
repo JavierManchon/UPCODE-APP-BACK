@@ -233,6 +233,13 @@ const patchUser = async (req, res, next) => {
     }
 }
 
+const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
-
-module.exports = { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser }
+module.exports = { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser, getAllUsers }
