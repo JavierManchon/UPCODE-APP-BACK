@@ -10,7 +10,7 @@ designRoutes.patch('/editDesign/:designId',[isAuth],editDesign);
 // designRoutes.put('/addticket',[isAuth],addticket);
 // designRoutes.put('/closeticket',[isAuth],closeticket);
 designRoutes.get('/allDesigns', getAllDesigns);
-designRoutes.get('/oneDesign/:designId',[isAuth], getDesignById);
+designRoutes.get('/oneDesign/:designId', getDesignById);
 designRoutes.get('/designByUser/:userId',[isAuth], getUserDesigns);
 // designRoutes.get('/single',singleticket);
 
