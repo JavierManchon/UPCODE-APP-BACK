@@ -233,6 +233,28 @@ const patchUser = async (req, res, next) => {
     }
 }
 
+const getAllUsers = async (req, res, next) => {
+    try {
+        const users = await User.find();
+        res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
 
+const deleteUser = async (req, res, next) => {
+    try {
+      const userId = req.params.id; // Obtener el ID del usuario de los parámetros de la solicitud
+      const deletedUser = await User.findByIdAndDelete(userId); // Buscar y eliminar el usuario por su ID
+      if (!deletedUser) {
+        // Si no se encuentra el usuario, devolver un mensaje de error
+        return res.status(404).json({ message: 'User not found' });
+      }
+      res.status(200).json({ message: 'User deleted successfully', deletedUser });
+    } catch (error) {
+      // Manejar errores
+      res.status(500).json({ message: error.message });
+    }
+  };
 
-module.exports = { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser }
+module.exports = { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser, getAllUsers, deleteUser }
