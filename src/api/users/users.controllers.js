@@ -81,7 +81,7 @@ const login = async (req, res, next) => {//Por ahora almaceno el token en la inf
 
     try {
         // Comprobamos que existe el email para logarse
-        const user = await User.findOne({ email: req.body.email })
+        const user = await User.findOne({ email: req.body.email }).populate('designs').populate('tickets').populate('projects').exec();
 
         //Si el usuario no existe no le deja logarse
         if(!user){
@@ -235,8 +235,22 @@ const patchUser = async (req, res, next) => {
 
 const getAllUsers = async (req, res, next) => {
     try {
-        const users = await User.find();
+        const users = await User.find().populate('designs');
         res.status(200).json(users);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+const getOneUser = async (req, res, next) => {
+    const userId = req.params.id;
+    console.log(userId)
+    if(!userId) {
+        res.status(404).json({ msg: 'Usuario no encontrado' });
+    }
+    try {
+        const user = await User.findById(userId).populate('designs');
+        res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -257,4 +271,4 @@ const deleteUser = async (req, res, next) => {
     }
   };
 
-module.exports = { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser, getAllUsers, deleteUser }
+module.exports = { register, login, logout, confirm, newPassword, isAdmin, getUserByToken, patchUser, getAllUsers, deleteUser, getOneUser }

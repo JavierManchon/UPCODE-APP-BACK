@@ -36,7 +36,7 @@ const createDesign = async (req, res, next) => {
             return res.status(404).json({ msg: 'Usuario no encontrado' });
         }
 
-        user.designs.push(newDesign._id);
+        user.designs.addToSet(newDesign._id);
         await user.save();
 
         res.status(201).json({ msg: 'Diseño creado y guardado correctamente', data: newDesign });
