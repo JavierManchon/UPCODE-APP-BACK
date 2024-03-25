@@ -23,7 +23,7 @@ const ticketSchema = new mongoose.Schema(
     status: { 
     type: String,
     enum: ["Enviado", "En proceso", "Completado"], 
-    default:["Enviado"],
+    default:"Enviado",
     },
 
     image: {
