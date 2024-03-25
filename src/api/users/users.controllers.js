@@ -81,7 +81,7 @@ const login = async (req, res, next) => {//Por ahora almaceno el token en la inf
 
     try {
         // Comprobamos que existe el email para logarse
-        const user = await User.findOne({ email: req.body.email }).populate('designs');
+        const user = await User.findOne({ email: req.body.email }).populate('designs').populate('tickets');
 
         //Si el usuario no existe no le deja logarse
         if(!user){
@@ -235,7 +235,7 @@ const patchUser = async (req, res, next) => {
 
 const getAllUsers = async (req, res, next) => {
     try {
-        const users = await User.find().populate('designs').populate('tickets').populate('projects');
+        const users = await User.find().populate('designs').populate('tickets');
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -249,7 +249,7 @@ const getOneUser = async (req, res, next) => {
         res.status(404).json({ msg: 'Usuario no encontrado' });
     }
     try {
-        const user = await User.findById(userId).populate('designs');
+        const user = await User.findById(userId).populate('designs').populate('tickets');
         res.status(200).json(user);
     } catch (error) {
         res.status(500).json({ message: error.message });
