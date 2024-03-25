@@ -235,7 +235,7 @@ const patchUser = async (req, res, next) => {
 
 const getAllUsers = async (req, res, next) => {
     try {
-        const users = await User.find();
+        const users = await User.find().populate('tickets');
         res.status(200).json(users);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -244,15 +244,13 @@ const getAllUsers = async (req, res, next) => {
 
 const deleteUser = async (req, res, next) => {
     try {
-      const userId = req.params.id; // Obtener el ID del usuario de los parámetros de la solicitud
-      const deletedUser = await User.findByIdAndDelete(userId); // Buscar y eliminar el usuario por su ID
+      const userId = req.params.id;
+      const deletedUser = await User.findByIdAndDelete(userId);
       if (!deletedUser) {
-        // Si no se encuentra el usuario, devolver un mensaje de error
         return res.status(404).json({ message: 'User not found' });
       }
       res.status(200).json({ message: 'User deleted successfully', deletedUser });
     } catch (error) {
-      // Manejar errores
       res.status(500).json({ message: error.message });
     }
   };

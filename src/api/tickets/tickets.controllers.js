@@ -1,4 +1,5 @@
 const Ticket = require('./tickets.model');
+const User = require('../users/users.model');
 const { deleteImgCloudinary } = require('../../middlewares/deleteFile.middleware');
 
 
@@ -23,21 +24,28 @@ const getOneTicket = async (req, res, next) => {
 
 const postOneTicket = async (req, res, next) => {
     try {
-        const image = req.file ? req.file.path : null;
-        const { title, description, comments, status } = req.body;
-        const designId = req.params.designId;
-        const userId = req.user.id;
+        const screenshot = req.file ? req.file.path : null;
+        const { title, description, comments, status, userId } = req.body;
         const newTicket = new Ticket({ 
-
-         title,
-         description, 
-         comments,
-         status,
-         image,
-         design: designId,
-         user: userId  
-
+            title,
+            description, 
+            comments,
+            status,
+            screenshot,
+            user: userId
         });
+        await newTicket.save();
+
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ msg: 'Usuario no encontrado' });
+        }
+
+        user.tickets.addToSet(newTicket._id);
+
+        await user.save();
+
         res.status(200).json(newTicket);
     } catch (error) {
         return next(error);
@@ -66,6 +74,17 @@ const deleteOneTicket = async (req, res, next) => {
     }
 }
 
+const getTicketsByUser = async (req, res, next) => {
+    try {
+        const { userId } = req.params;
+        const tickets = await Ticket.find({ user: userId });
+        res.status(200).json(tickets);
+    } catch (error) {
+        return next(error);
+    }
+}
 
 
-module.exports = { getAllTickets, getOneTicket, postOneTicket, patchOneTicket, deleteOneTicket };
+
+
+module.exports = { getAllTickets, getOneTicket, postOneTicket, patchOneTicket, deleteOneTicket, getTicketsByUser };
