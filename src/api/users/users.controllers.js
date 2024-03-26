@@ -214,13 +214,14 @@ const getUserByToken = async (req, res, next) => {
 const patchUser = async (req, res, next) => {
     try {
         const { id } = req.params;
-        const { username, name, surname, isPremium } = req.body;
+        const { username, name, surname, isPremium, tickets } = req.body;
         let image = req.file ? req.file.path : null;
         const userToUpdate = {
             username,
             name,
             surname,
-            isPremium
+            isPremium,
+            tickets
         }
         if (image) {
             userToUpdate.image = image
