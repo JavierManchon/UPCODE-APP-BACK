@@ -4,7 +4,7 @@ const User = require('../users/users.model');
 
 const createDesign = async (req, res, next) => {
     const { userId } = req.params;
-    const { nameDesign, elementType, template, image, defaultContent, defaultStyles, edit } = req.body;
+    const { nameDesign, elementType, template, likes, image, defaultContent, defaultStyles, edit } = req.body;
 
     try {
         if (!userId) {
@@ -16,6 +16,7 @@ const createDesign = async (req, res, next) => {
             nameDesign,
             elementType,
             template,
+            likes,
             image,
             defaultContent: {
                 children: defaultContent.children || [],
@@ -109,4 +110,31 @@ const getDesignById = async (req, res, next) => {
     }
 };
 
-module.exports = {createDesign, removeDesign, editDesign, getAllDesigns, getDesignById, getUserDesigns};
+const likeSystem = async (req, res, next) => {
+    const { designId, userId } = req.params;
+  
+    try {
+      const design = await Design.findById(designId);
+  
+      if (!design) {
+        return res.status(404).json({ msg: 'Diseño no encontrado' });
+      }
+  
+      const isLiked = design.likes.includes(userId);
+  
+      if (isLiked) {
+        design.likes = design.likes.filter(id => id.toString() !== userId);
+      } else {
+        design.likes.push(userId);
+      }
+  
+      await design.save();
+  
+      res.status(200).json({ msg: 'Like actualizado correctamente', data: design.likes });
+    } catch (error) {
+      next(error);
+    }
+  };
+  
+
+module.exports = {createDesign, removeDesign, editDesign, getAllDesigns, getDesignById, getUserDesigns, likeSystem};
