@@ -5,12 +5,15 @@ const cors = require("cors");
 const { configCloudinary } = require('./src/utils/cloudinary/config.js');
 const { connect } = require("./src/utils/db.js");
 
-const UserRoutes = require('./src/api/users/users.routes.js')
+
 
 connect();
 
 const dotenv = require('dotenv');
+const UserRoutes = require('./src/api/users/users.routes.js');
 const ProductRoutes = require("./src/api/products/products.routes.js");
+const DesignRoutes = require("./src/api/design/designs.routes.js");
+const TicketRoutes = require("./src/api/tickets/tickets.routes.js");
 // Ejecutamos método para usar .env
 dotenv.config();
  
@@ -43,6 +46,8 @@ app.use(
 //Routes
 app.use('/api/users', UserRoutes)
 app.use('/api/products', ProductRoutes)
+app.use('/api/designs', DesignRoutes)
+app.use('/api/tickets', TicketRoutes)
 app.use("/public", express.static("public"));
 app.use("/api", (req, res, next) => "im alive");
 
@@ -65,3 +70,6 @@ app.use(function (err, req, res, next) {
   if (!err.statusCode) err.statusCode = 500;
   res.status(err.statusCode).send(err.message);
 });
+
+//Comentario javi
+//comentario ramas
