@@ -48,7 +48,7 @@ const register = async (req, res, next) => {
 
         return res.status(201).json({ msg: 'Revisa tu correo. Se te ha enviado un enlace de confirmación' });
     } catch (error) {
-        console.error(error); // Muestra el error en la consola para propósitos de depuración
+        console.error(error); 
         return res.status(404).json({ msg: "Ha ocurrido un error con el registro." });
     }
 };
@@ -65,7 +65,6 @@ const confirm = async (req, res, next) => {
 
     try {
         userConfirm.confirmed = true;
-        //userConfirm.token = "";
         await userConfirm.save()
 
         //Hay que sustituir esto por el link del login cuando lo tengamos enrutado:
@@ -194,7 +193,6 @@ const getUserByToken = async (req, res, next) => {
         
         const decodedToken = jwt.verify(tokenWithoutBearer, 'KVGfjghdjJJKHLH-43543T-VJHFDSKVJHSFDJK-45646FDGVF');
 
-        // Suponiendo que el token contiene el ID del usuario
         const userId = decodedToken.id;
         const userLogued = await User.findOne({ _id: userId });
 

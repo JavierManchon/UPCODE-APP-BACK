@@ -1,6 +1,5 @@
 const cloudinary = require('cloudinary').v2
 
-// Pasamos una URL y la borra de CLoudinary
 const deleteImgCloudinary = (imgUrl) => {
     const imgSplited = imgUrl.split('/')
     const nameSplited = imgSplited[imgSplited.length - 1].split('.')

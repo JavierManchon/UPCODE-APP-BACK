@@ -12,7 +12,6 @@ const connect = async () => {
       useNewUrlParser: true,
       useUnifiedTopology: true,
     });
-    // Nombre de DB y el Host en el que está
     const { name, host } = db.connection;
     console.log(`Conectado a la DB : ${name} en el host: ${host}`);
   } catch (error) {

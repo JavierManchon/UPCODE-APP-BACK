@@ -1,7 +1,6 @@
 const nodemailer = require("nodemailer")
 const express = require("express");
 const cors = require("cors");
-// Método de config cloudinary
 const { configCloudinary } = require('./src/utils/cloudinary/config.js');
 const { connect } = require("./src/utils/db.js");
 
@@ -11,13 +10,11 @@ connect();
 
 const dotenv = require('dotenv');
 const UserRoutes = require('./src/api/users/users.routes.js');
-const ProductRoutes = require("./src/api/products/products.routes.js");
 const DesignRoutes = require("./src/api/design/designs.routes.js");
 const TicketRoutes = require("./src/api/tickets/tickets.routes.js");
-// Ejecutamos método para usar .env
 dotenv.config();
  
-// Ejecutar la configuación de cloudinary
+
 configCloudinary();
 
 const app = express();
@@ -30,13 +27,6 @@ app.use((req, res, next) => {
   next();
 });
 
-// app.use("*", (req, res, next) => {
-//   const error = new Error();
-//   error.status = 404;
-//   error.message = "Route not found";
-//   return next(error);
-// });
-
 app.use(
   cors({
     origin: ["*"],
@@ -45,7 +35,6 @@ app.use(
 
 //Routes
 app.use('/api/users', UserRoutes)
-app.use('/api/products', ProductRoutes)
 app.use('/api/designs', DesignRoutes)
 app.use('/api/tickets', TicketRoutes)
 app.use("/public", express.static("public"));
@@ -71,5 +60,3 @@ app.use(function (err, req, res, next) {
   res.status(err.statusCode).send(err.message);
 });
 
-//Comentario javi
-//comentario ramas
