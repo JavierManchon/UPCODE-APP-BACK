@@ -3,10 +3,10 @@ const nodemailer = require("nodemailer");
    let transporter = nodemailer.createTransport({
         host: "smtp.gmail.com",
         port: 465,
-        secure: true, // true for 465, false for other ports
+        secure: true, 
         auth: {
-          user: "upcodeapp.team@gmail.com", // generated ethereal user
-          pass: process.env.NODEMAILER_PASS, // generated ethereal password
+          user: "upcodeapp.team@gmail.com", 
+          pass: process.env.NODEMAILER_PASS, 
         },
       });
 

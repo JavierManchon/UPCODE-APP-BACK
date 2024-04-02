@@ -1,4 +1,3 @@
-// Importamos la librería de jsonwebtoken
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
