@@ -68,7 +68,7 @@ const confirm = async (req, res, next) => {
         await userConfirm.save()
 
         //Hay que sustituir esto por el link del login cuando lo tengamos enrutado:
-        return res.redirect('https://upcode-app-front.vercel.app/login');
+        return res.redirect('https://upcode-app-front.vercel.app');
         
     
     } catch (error) {
