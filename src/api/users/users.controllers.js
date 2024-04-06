@@ -43,7 +43,7 @@ const register = async (req, res, next) => {
             from: '"Equipo UP_CODE " <//emisor>',
             to: `${req.body.email}`,
             subject: "Confirmación registro en UP_CODE",
-            html: `<b>Bienvenido a la aplicación! ${req.body.name}, solo te queda un paso por realizar, pincha en el siguiente enlace para completar tu registro: <a href="http://localhost:8084/api/users/confirm-user/${user.token}">Confirmar usuario</a> </b>`,
+            html: `<b>Bienvenido a la aplicación! ${req.body.name}, solo te queda un paso por realizar, pincha en el siguiente enlace para completar tu registro: <a href="https://back-proyecto-final-a8x6.onrender.com/api/users/confirm-user/${user.token}">Confirmar usuario</a> </b>`,
         });
 
         return res.status(201).json({ msg: 'Revisa tu correo. Se te ha enviado un enlace de confirmación' });
